@@ -40,7 +40,7 @@ class coordinadorXbee:
 		return self.xbeeAddrStr
 		
 	def getListaNodos(self):
-		'''Guarda una lista con las direcciones de los nodos conectados 
+		'''Guarda y retorna una lista con las direcciones de los nodos conectados 
 		a la red.
 		'''
 		self.auxAddr=self.getAddress()
