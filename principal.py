@@ -11,14 +11,24 @@ def main():
 	puerto_serie=serial.Serial('/dev/ttyUSB0',9600)
 	xbee=ZigBee(puerto_serie)
 	xbeeCoor=coordinadorXbee()						#objeto coordinador
+	
 	while True:
 		try:
 			tramaDatos=xbee.wait_read_frame()
 			xbeeCoor.setTramaDic(tramaDatos)
-			datosRf=xbeeCoor.getDatosRf()
-			xbeeAddr=xbeeCoor.getAddress()
-			if datosRf!=None:
-				print("Datos: {} Direccion:{} ListaDatos:{}".format(datosRf,xbeeAddr,xbeeCoor.getListaNodos()))
+			nodoAddr=xbeeCoor.getAddress()
+			if xbeeCoor.nuevoNodo(nodoAddr):
+				xbeeCoor.setListaNodos(nodoAddr)
+			xbeeCoor.listaNodos[nodoAddr].setDatos(xbeeCoor.getDatosRf())
+			humedad=xbeeCoor.listaNodos[nodoAddr].getHumedad()
+			temperatura=xbeeCoor.listaNodos[nodoAddr].getTemperatura()
+			lux=xbeeCoor.listaNodos[nodoAddr].getLux()
+			nodoId=xbeeCoor.listaNodos[nodoAddr].id
+			print("NODOID: {}  HUMEDAD_R: {}  TEMPERATURA: {}  LUX: {}".format(nodoId,humedad,temperatura,lux))
+			#datosRf=xbeeCoor.getDatosRf()
+			#xbeeAddr=xbeeCoor.getAddress()
+			#if datosRf!=None:
+				#print("Datos: {} Direccion:{} ListaDatos:{}".format(datosRf,xbeeAddr,xbeeCoor.getListaNodos()))
 			#trama_dic=xbeeCoor.getTramaDic()
 			#print (trama_dic)
 		except KeyboardInterrupt:

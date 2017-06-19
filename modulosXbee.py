@@ -2,17 +2,17 @@
 
 class coordinadorXbee:
 	'Representa un nodo coordinador en una red XBEE'
+	listaNodos={}
+	
 	def __init__(self):
 		'''
 		Inicializa las variables de temperatura, humedad,lux y
 		la variable trama_dic que contiene los datos.
 		'''
-		self.temperatura=0
-		self.humedad=0
-		self.lux=0		
+				
 		self.trama_dic={}
 		self.rf_dataStr=""
-		self.listaNodos=[]
+		
 		
 	def setTramaDic(self,trama_dic):
 		'Actualiza la trama de datos recibidos por el módulo.'
@@ -38,18 +38,59 @@ class coordinadorXbee:
 			self.aux=hex(e)
 			self.xbeeAddrStr+=self.aux[1:]
 		return self.xbeeAddrStr
-		
-	def getListaNodos(self):
-		'''Guarda y retorna una lista con las direcciones de los nodos conectados 
-		a la red.
+	
+	def nuevoNodo(self,nodoAddr):
+		'''Verifica si la dirección contenida en la trama recibida es de
+		un nodo conocido o no. Retorna True si la dirección es nueva, False
+		en caso contrario.
 		'''
-		self.auxAddr=self.getAddress()
-		if self.auxAddr not in self.listaNodos:
-			self.listaNodos.append(self.auxAddr)
-		return self.listaNodos			
+		if nodoAddr not in coordinadorXbee.listaNodos:
+			return True
+		else:
+			return False
 		
+	def setListaNodos(self,nodoAddr):
+		'''Actualiza el contenido del diccionario listaNodos con la dirección 
+		como llave e inicializa un objeto xbeeNodo.
+		'''
+		coordinadorXbee.listaNodos[nodoAddr]=xbeeNodo()
+			
 		
-	def __str__(self):
-		'Para depuración'
-		return str(self.listaNodos)
+	#def __str__(self):
+		#'Para depuración'
+		#return str(self.listaNodos)
+
+class xbeeNodo():
+	'''Crea objetos Nodo y calcula el valor de los parametros temperatura,
+	humedad e intesidad luminosa'''
+	id=0
+	
+	def __init__(self):
+		'Inicia los objetos con un valor de identificación único'
+		xbeeNodo.id+=1
+		self.id=xbeeNodo.id
+		self.temperatura=0
+		self.humedad=0
+		self.lux=0
+		
+	def setDatos(self,datosRf):
+		'''Crea una lista con las datos recibidosy luego separa los parámetros
+		de humedad, temperatura e intensidad luminosa'''
+		self.listaDatos=datosRf.split(">")
+		self.humedad=int(self.listaDatos[0])
+		self.temperatura=int(self.listaDatos[1])
+		self.lux=int(self.listaDatos[2])
+		
+	def getHumedad(self):
+		'Retorna el valor de humedad relativa'
+		return self.humedad
+		
+	def getTemperatura(self):
+		'Retorna el valor de temperatura'
+		return self.temperatura
+		
+	def getLux(self):
+		'Retorna el valor de lux'
+		return self.lux
+		
 	 
