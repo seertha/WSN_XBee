@@ -30,6 +30,7 @@ class coordinadorXbee:
 			return self.rf_dataStr
 		except UnicodeDecodeError:
 			print("UnicodeDecodeError en: {}".format(rf_dataByte))
+			return None
 	
 	def getAddress(self):
 		'Retorna la dirección del nodo sensor remoto'
@@ -77,17 +78,21 @@ class xbeeNodo():
 		'''Crea una lista con las datos recibidosy luego separa los parámetros
 		de humedad, temperatura e intensidad luminosa'''
 		self.listaDatos=datosRf.split(">")
-		self.humedad=int(self.listaDatos[0])
-		self.temperatura=int(self.listaDatos[1])
-		self.lux=int(self.listaDatos[2])
+		
+		try:
+			self.humedad=int(self.listaDatos[0])
+			self.temperatura=int(self.listaDatos[1])
+			self.lux=int(self.listaDatos[2])
+		except IndexError:
+			print("IndexError-listaDatos:{}".format(self.listaDatos))
 		
 	def getHumedad(self):
 		'Retorna el valor de humedad relativa'
-		return self.humedad
+		return self.humedad/10
 		
 	def getTemperatura(self):
 		'Retorna el valor de temperatura'
-		return self.temperatura
+		return self.temperatura/10
 		
 	def getLux(self):
 		'Retorna el valor de lux'

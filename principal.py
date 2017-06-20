@@ -19,12 +19,13 @@ def main():
 			nodoAddr=xbeeCoor.getAddress()
 			if xbeeCoor.nuevoNodo(nodoAddr):
 				xbeeCoor.setListaNodos(nodoAddr)
-			xbeeCoor.listaNodos[nodoAddr].setDatos(xbeeCoor.getDatosRf())
-			humedad=xbeeCoor.listaNodos[nodoAddr].getHumedad()
-			temperatura=xbeeCoor.listaNodos[nodoAddr].getTemperatura()
-			lux=xbeeCoor.listaNodos[nodoAddr].getLux()
-			nodoId=xbeeCoor.listaNodos[nodoAddr].id
-			print("NODOID: {}  HUMEDAD_R: {}  TEMPERATURA: {}  LUX: {}".format(nodoId,humedad,temperatura,lux))
+			if xbeeCoor.getDatosRf()!=None:
+				xbeeCoor.listaNodos[nodoAddr].setDatos(xbeeCoor.getDatosRf())
+				humedad=xbeeCoor.listaNodos[nodoAddr].getHumedad()
+				temperatura=xbeeCoor.listaNodos[nodoAddr].getTemperatura()
+				lux=xbeeCoor.listaNodos[nodoAddr].getLux()
+				nodoId=xbeeCoor.listaNodos[nodoAddr].id
+				print("NODOID: {}  HUMEDAD_R: {}  TEMPERATURA: {}  LUX: {}".format(nodoId,humedad,temperatura,lux))
 			#datosRf=xbeeCoor.getDatosRf()
 			#xbeeAddr=xbeeCoor.getAddress()
 			#if datosRf!=None:
