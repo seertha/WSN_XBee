@@ -24,12 +24,12 @@ class coordinadorXbee:
 		
 	def getDatosRf(self):
 		'Retorna los datos contenidos en rf_data en formato str'
-		rf_dataByte=self.trama_dic['rf_data']
+		self.rf_dataByte=self.trama_dic['rf_data']
 		try:
-			self.rf_dataStr=rf_dataByte.decode('UTF-8')
+			self.rf_dataStr=self.rf_dataByte.decode('UTF-8')
 			return self.rf_dataStr
 		except UnicodeDecodeError:
-			print("UnicodeDecodeError en: {}".format(rf_dataByte))
+			print("UnicodeDecodeError en: {}".format(self.rf_dataByte))
 			return None
 	
 	def getAddress(self):
@@ -79,12 +79,15 @@ class xbeeNodo():
 		de humedad, temperatura e intensidad luminosa'''
 		self.listaDatos=datosRf.split(">")
 		
-		try:
+		#try:
+		if len(self.listaDatos)==3:
 			self.humedad=int(self.listaDatos[0])
 			self.temperatura=int(self.listaDatos[1])
 			self.lux=int(self.listaDatos[2])
-		except IndexError:
-			print("IndexError-listaDatos:{}".format(self.listaDatos))
+		else:
+			print ("Datos insuficientes en listaDatos:{}".format(self.listaDatos))
+		#except IndexError:
+			#print("IndexError-listaDatos:{}".format(self.listaDatos))
 		
 	def getHumedad(self):
 		'Retorna el valor de humedad relativa'

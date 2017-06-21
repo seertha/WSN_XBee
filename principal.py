@@ -14,13 +14,14 @@ def main():
 	
 	while True:
 		try:
-			tramaDatos=xbee.wait_read_frame()
-			xbeeCoor.setTramaDic(tramaDatos)
-			nodoAddr=xbeeCoor.getAddress()
-			if xbeeCoor.nuevoNodo(nodoAddr):
+			tramaDatos=xbee.wait_read_frame()		#Espera la recepción de una trama de datos
+			xbeeCoor.setTramaDic(tramaDatos)		#Actualiza la trama en xbeeCoor
+			nodoAddr=xbeeCoor.getAddress()			#Obtiene la dirreción de origen de la trama
+			if xbeeCoor.nuevoNodo(nodoAddr):		#Si la dirección es de un nodo recién conectado a la red lo agrega a la lista de nodos
 				xbeeCoor.setListaNodos(nodoAddr)
-			if xbeeCoor.getDatosRf()!=None:
-				xbeeCoor.listaNodos[nodoAddr].setDatos(xbeeCoor.getDatosRf())
+			datosRf=xbeeCoor.getDatosRf()			#Obtiene los datos de los sensores contenidos en la trama 
+			if datosRf!=None:						#Si los datos contienen errores se descartan
+				xbeeCoor.listaNodos[nodoAddr].setDatos(datosRf)
 				humedad=xbeeCoor.listaNodos[nodoAddr].getHumedad()
 				temperatura=xbeeCoor.listaNodos[nodoAddr].getTemperatura()
 				lux=xbeeCoor.listaNodos[nodoAddr].getLux()
