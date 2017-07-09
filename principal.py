@@ -34,6 +34,7 @@ def main():
 			#trama_dic=xbeeCoor.getTramaDic()
 			#print (trama_dic)
 		except KeyboardInterrupt:
+			puerto_serie.close()
 			break
 		
 			
