@@ -14,9 +14,14 @@ class coordinadorXbee:
 		self.rf_dataStr=""
 		
 		
+	def actualizarDatos(self,trama_dic):
+		self.setTramaDic(trama_dict)
+		
+	
 	def setTramaDic(self,trama_dic):
 		'Actualiza la trama de datos recibidos por el módulo.'
 		self.trama_dic=trama_dic
+		
 		
 	def getTramaDic(self):
 		'Retorna el diccionario conteniendo los datos'
@@ -100,5 +105,12 @@ class xbeeNodo():
 	def getLux(self):
 		'Retorna el valor de lux'
 		return self.lux
+
+class bd ():
+	conex=None
+	'Crea un objeto para interactuar con la base de datos'
+	def __init__(self,base_path):
+		'base_path: dirección de la base de datos'
+		conex=sqlite3.connect(base_path)
 		
 	 

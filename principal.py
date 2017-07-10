@@ -16,6 +16,9 @@ def main():
 		try:
 			tramaDatos=xbee.wait_read_frame()		#Espera la recepción de una trama de datos
 			xbeeCoor.setTramaDic(tramaDatos)		#Actualiza la trama en xbeeCoor
+			
+			
+			
 			nodoAddr=xbeeCoor.getAddress()			#Obtiene la dirreción de origen de la trama
 			if xbeeCoor.nuevoNodo(nodoAddr):		#Si la dirección es de un nodo recién conectado a la red lo agrega a la lista de nodos
 				xbeeCoor.setListaNodos(nodoAddr)
