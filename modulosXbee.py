@@ -106,44 +106,6 @@ class nodoXbee:
 			self.aux1=False
 			print("UnicodeError")
 			
-	#def getDatosRf(self):
-		#'Retorna los datos contenidos en rf_data en formato str'
-		#self.rf_dataByte=self.trama_dic['rf_data']
-		#try:
-			#self.rf_dataStr=self.rf_dataByte.decode('UTF-8')
-			#return self.rf_dataStr
-		#except UnicodeDecodeError:
-			#print("UnicodeDecodeError en: {}".format(self.rf_dataByte))
-			#return None
-	
-	#def getAddress(self):
-		#'Retorna la dirección del nodo sensor remoto'
-		#self.xbeeAddrStr=""
-		#for e in self.trama_dic['source_addr_long']:
-			#self.aux=hex(e)
-			#self.xbeeAddrStr+=self.aux[1:]
-		#return self.xbeeAddrStr
-	
-	#def nuevoNodo(self,nodoAddr):
-		#'''Verifica si la dirección contenida en la trama recibida es de
-		#un nodo conocido o no. Retorna True si la dirección es nueva, False
-		#en caso contrario.
-		#'''
-		#if nodoAddr not in coordinadorXbee.listaNodos:
-			#return True
-		#else:
-			#return False
-		
-	#def setListaNodos(self,nodoAddr):
-		#'''Actualiza el contenido del diccionario listaNodos con la dirección 
-		#como llave e inicializa un objeto xbeeNodo.
-		#'''
-		#coordinadorXbee.listaNodos[nodoAddr]=xbeeNodo()
-			
-		
-	#def __str__(self):
-		#'Para depuración'
-		#return str(self.listaNodos)
 
 class xbeeSensor():
 	'''Crea objetos Nodo y calcula el valor de los parametros temperatura,
