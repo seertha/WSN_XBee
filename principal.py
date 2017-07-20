@@ -21,7 +21,8 @@ def main():
 				tiempoDatos=strftime("%H:%M:%S %d/%m/%Y")
 				xbeeCoor.guardarDatos(tiempoDatos)
 		except KeyboardInterrupt:
-			puerto_serie.close()	
+			puerto_serie.close()
+			break	
 
 
 if __name__=="__main__":

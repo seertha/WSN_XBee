@@ -29,3 +29,48 @@ lcd.message('ver1.0')
 time.sleep(5)
 lcd.clear()
 
+#conectar con base de datos
+conn=sqlite3.connect('/home/pi/dataBases/dbTest01.db')
+cur=conn.cursor()
+
+def consulta(dato):
+    '''dato:(str) 
+        -temperatura
+        -humedadR
+        -lux '''
+    sql_consulta=('''SELECT {} 
+                FROM datos
+                ORDER BY fecha_hora DESC
+                LIMIT 1'''.format(dato))
+    cur.execute(sql_consulta,)
+    respuesta=cur.fetchall()
+    return str(respuesta[0][0])
+
+while True:
+    try:
+        temperatura=consulta("temperatura")
+        humedad=consulta("humedadR")
+        lux=consulta("lux")
+        #mostrar datos en lcd
+        lcd.set_cursor(0,0)
+        lcd.message('TEMP:')
+        lcd.set_cursor(5,0)
+        lcd.message(temperatura)
+        lcd.set_cursor(0,1)
+        lcd.message('HUMR:')
+        lcd.set_cursor(5,1)
+        lcd.message(humedad)
+        lcd.set_cursor(10,0)
+        lcd.message('|')
+        lcd.set_cursor(10,1)
+        lcd.message('|')
+        lcd.set_cursor(11,0)
+        lcd.message('LUX:')
+        lcd.set_cursor(11,1)
+        lcd.message(lux)
+        time.sleep(5)
+    except KeyboardInterrupt:
+        lcd.clear()
+        conn.close()
+        break
+    
