@@ -1,7 +1,7 @@
 #Prueba de conexión y consulta con la base de datos
 import sqlite3
 
-conn=sqlite3.connect('/media/CasaL/st/Documentos/sqliteDB/wsnDB.db')
+conn=sqlite3.connect('/home/pi/dataBases/dbTest01.db')
 cur=conn.cursor()
 
 def consulta(dato):
