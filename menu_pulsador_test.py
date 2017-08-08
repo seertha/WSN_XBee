@@ -24,12 +24,16 @@ lcd_rows =2
 #Inicializar LCD
 lcd=LCD.Adafruit_CharLCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, lcd_columns,lcd_rows)
 
-def pulsador(canal):
+def pulsador(numeroMenu):
+    control=numeroMenu
     print("Pulsador presionado")
-    numeroMenu+=1
+    control+=1
     lcd.clear()
-    if numeroMenu>3:
-        numeroMenu=0
+    #lcd.set_cursor(0,0)
+    if control>3:
+     return 0
+    else:
+     return control
 
 def mostrarPantalla(numeroMenu):
     if numeroMenu==0:
@@ -46,14 +50,17 @@ def mostrarPantalla(numeroMenu):
         lcd.message("MENU 4")
 
 
-GPIO.add_event_detect(4,GPIO.FALLING,callback=pulsador,bouncetime=200)
+#GPIO.add_event_detect(4,GPIO.FALLING,callback=pulsador,bouncetime=200)
+GPIO.add_event_detect(4,GPIO.FALLING,bouncetime=200)
 lcd.show_cursor(False)
 lcd.clear()
 print("Programa inicado")
-
+mostrarPantalla(numeroMenu)
 while True:
     try:
-        mostrarPantalla(numeroMenu)
+        if GPIO.event_detected(4):
+         numeroMenu=pulsador(numeroMenu)
+         mostrarPantalla(numeroMenu)
         #time.sleep(0.5)
     except KeyboardInterrupt:
         lcd.clear()
