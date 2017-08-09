@@ -38,10 +38,10 @@ def consulta(cnx,sql):
 
 def base_nodos():
     lista_aux=[]
-    base_datos="basePath"
+    base_datos="/home/pi/dataBases/dbTest01.db"
     sql_con="SELECT nodo_id FROM nodoSensor"
     conn=conectarBase(base_datos)
-    res=consulta(cnx,sql_con)
+    res=consulta(conn,sql_con)
     for e in range(len(res)):
         lista_aux.append(res[e][0])
     return lista_aux
@@ -51,7 +51,8 @@ def pulsador(numeroMenu,cantidad_nodos):
     print("Pulsador presionado")
     control+=1
     lcd.clear()
-    #lcd.set_cursor(0,0)
+    #print(cantidad_nodos)
+    #print (control)
     if control>cantidad_nodos:
      return 0
     else:
@@ -74,7 +75,7 @@ mostrarPantalla(lista_nodos[numeroMenu])
 while True:
     try:
         if GPIO.event_detected(4):
-         numeroMenu=pulsador(numeroMenu,len(lista_nodos))
+         numeroMenu=pulsador(numeroMenu,len(lista_nodos)-1)
          mostrarPantalla(lista_nodos[numeroMenu])
         
     except KeyboardInterrupt:
