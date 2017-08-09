@@ -38,7 +38,7 @@ def consulta(cnx,sql):
 
 def base_nodos():
     lista_aux=[]
-    base_datos="/home/pi/dataBases/dbTest01.db"
+    base_datos="/home/pi/xbeeProyecto/basesTest/xbee_db02.db"
     sql_con="SELECT nodo_id FROM nodoSensor"
     conn=conectarBase(base_datos)
     res=consulta(conn,sql_con)
