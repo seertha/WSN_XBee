@@ -65,11 +65,34 @@ def mostrarPantalla(numeroMenu,base_path):
     '''    Muestra en el display LCD el nodo y sus datos correspondientes.
     '''
     datos_nodo=obtenerDatos(numeroMenu,base_path)
-    print(datos_nodo)
-    lcd.set_cursor(5,0)
-    lcd.message("NODO ")
-    lcd.set_cursor(10,0)
-    lcd.message(str(numeroMenu))
+    #print(datos_nodo)
+    if len(datos_nodo)<3:
+     lcd.set_cursor(5,0)
+     lcd.message("NODO ")
+     lcd.set_cursor(10,0)
+     lcd.message(str(numeroMenu))
+     lcd.set_cursor(2,1)
+     lcd.message("ERROR DATOS")
+    else:
+     temp=datos_nodo[0]
+     hum=datos_nodo[1]
+     lux=datos_nodo[2]
+     lcd.set_cursor(0,0)
+     lcd.message("NODO:")
+     lcd.set_cursor(5,0)
+     lcd.message(str(numeroMenu))
+     lcd.set_cursor(9,0)
+     lcd.message("T:")
+     lcd.set_cursor(11,0)
+     lcd.message(str(temp))
+     lcd.set_cursor(0,1)
+     lcd.message("HR:")
+     lcd.set_cursor(3,1)
+     lcd.message(str(hum))
+     lcd.set_cursor(9,1)
+     lcd.message("L:")
+     lcd.set_cursor(11,1)
+     lcd.message(str(lux))
 
 def obtenerDatos(nodo,base_path):
     '''Retorna una lista conteniendo los últimos datos registrados en
@@ -82,8 +105,10 @@ def obtenerDatos(nodo,base_path):
             LIMIT 1'''.format(nodo))
     conn=conectarBase(base_path)
     resp=consulta(conn,sql_con)
-    for e in range(len(resp)):
-        lista_aux.append(resp[e][0])
+    #print("Res_con:{}".format(resp))
+    for e in resp:
+        for x in e:
+         lista_aux.append(x)
     conn.close()
     return lista_aux
 
@@ -100,7 +125,7 @@ while True:
     try:
         if GPIO.event_detected(4):
          numeroMenu=pulsador(numeroMenu,len(lista_nodos)-1)
-         mostrarPantalla(lista_nodos[numeroMenu])
+         mostrarPantalla(lista_nodos[numeroMenu],base_datos)
         
     except KeyboardInterrupt:
         lcd.clear()
