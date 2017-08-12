@@ -36,14 +36,17 @@ def consulta(cnx,sql):
     cur.execute(sql)
     return cur.fetchall()
 
-def base_nodos():
+def base_nodos(base_path):
+    '''Retorna una lista con los nodos registrados en la base 
+    de datos
+    '''
     lista_aux=[]
-    base_datos="/home/pi/xbeeProyecto/basesTest/xbee_db02.db"
     sql_con="SELECT nodo_id FROM nodoSensor"
-    conn=conectarBase(base_datos)
+    conn=conectarBase(base_path)
     res=consulta(conn,sql_con)
     for e in range(len(res)):
         lista_aux.append(res[e][0])
+    conn.close()
     return lista_aux
 
 def pulsador(numeroMenu,cantidad_nodos):
@@ -58,19 +61,40 @@ def pulsador(numeroMenu,cantidad_nodos):
     else:
      return control
 
-def mostrarPantalla(numeroMenu):
+def mostrarPantalla(numeroMenu,base_path):
+    '''    Muestra en el display LCD el nodo y sus datos correspondientes.
+    '''
+    datos_nodo=obtenerDatos(numeroMenu,base_path)
+    print(datos_nodo)
     lcd.set_cursor(5,0)
     lcd.message("NODO ")
     lcd.set_cursor(10,0)
     lcd.message(str(numeroMenu))
 
-GPIO.add_event_detect(4,GPIO.FALLING,bouncetime=200)
+def obtenerDatos(nodo,base_path):
+    '''Retorna una lista conteniendo los últimos datos registrados en
+    la base de datos por el sensor especificado en nodo
+    '''
+    lista_aux=[]
+    sql_con=('''SELECT temperatura,humedadR,lux
+            FROM datos WHERE nodo_id={}
+            ORDER BY fecha_hora DESC
+            LIMIT 1'''.format(nodo))
+    conn=conectarBase(base_path)
+    resp=consulta(conn,sql_con)
+    for e in range(len(resp)):
+        lista_aux.append(resp[e][0])
+    conn.close()
+    return lista_aux
 
-lista_nodos=base_nodos()
+
+GPIO.add_event_detect(4,GPIO.FALLING,bouncetime=200)
+base_datos="/home/pi/xbeeProyecto/basesTest/xbee_db02.db"
+lista_nodos=base_nodos(base_datos)
 lcd.show_cursor(False)
 lcd.clear()
 print("Programa inicado")
-mostrarPantalla(lista_nodos[numeroMenu])
+mostrarPantalla(lista_nodos[numeroMenu],base_datos)
 
 while True:
     try:
