@@ -2,7 +2,7 @@
 #muestra en un display LCD 20x4
 import Adafruit_CharLCD as LCD
 import RPi.GPIO as GPIO
-import base_datos
+from base_datos import db
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(4,GPIO.IN)
@@ -112,7 +112,7 @@ def obtenerDatos(nodo,base_path):
             ORDER BY fecha_hora DESC
             LIMIT 1'''.format(nodo))
     #conn=conectarBase(base_path)
-    connDB.consultaSimp(conn,sql_con)
+    resp=connDB.consultaSimp(sql_con)
     #print("Res_con:{}".format(resp))
     for e in resp:
         for x in e:
