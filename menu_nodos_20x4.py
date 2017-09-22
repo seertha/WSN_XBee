@@ -2,7 +2,7 @@
 #muestra en un display LCD 20x4
 import Adafruit_CharLCD as LCD
 import RPi.GPIO as GPIO
-import sqlite3
+import base_datos
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(4,GPIO.IN)
@@ -23,18 +23,18 @@ lcd_rows =4
 #Inicializar LCD
 lcd=LCD.Adafruit_CharLCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, lcd_columns,lcd_rows)
 
-def conectarBase(base_path):
-    try:
-        cnx=sqlite3.connect(base_path)
-        return cnx
-    except Error as e:
-        print(e)
-    return None
-
-def consulta(cnx,sql):
-    cur=cnx.cursor()
-    cur.execute(sql)
-    return cur.fetchall()
+#def conectarBase(base_path):
+#    try:
+#        cnx=sqlite3.connect(base_path)
+#        return cnx
+#    except Error as e:
+#        print(e)
+#    return None
+#
+#def consultaSimp(cnx,sql):
+#    cur=cnx.cursor()
+#    cur.execute(sql)
+#    return cur.fetchall()
 
 def base_nodos(base_path):
     '''Retorna una lista con los nodos registrados en la base 
@@ -42,11 +42,11 @@ def base_nodos(base_path):
     '''
     lista_aux=[]
     sql_con="SELECT nodo_id FROM nodoSensor"
-    conn=conectarBase(base_path)
-    res=consulta(conn,sql_con)
+    #conn=conectarBase(base_path)
+    res=connDB.consultaSimp(sql_con)
     for e in range(len(res)):
         lista_aux.append(res[e][0])
-    conn.close()
+    #conn.close()
     return lista_aux
 
 def pulsador(numeroMenu,cantidad_nodos):
@@ -111,29 +111,30 @@ def obtenerDatos(nodo,base_path):
             FROM datos WHERE nodo_id={}
             ORDER BY fecha_hora DESC
             LIMIT 1'''.format(nodo))
-    conn=conectarBase(base_path)
-    resp=consulta(conn,sql_con)
+    #conn=conectarBase(base_path)
+    connDB.consultaSimp(conn,sql_con)
     #print("Res_con:{}".format(resp))
     for e in resp:
         for x in e:
          lista_aux.append(x)
-    conn.close()
+    #conn.close()
     return lista_aux
 
 
 GPIO.add_event_detect(4,GPIO.FALLING,bouncetime=200)
-base_datos="/home/pi/xbeeProyecto/basesTest/xbee_db02.db"
-lista_nodos=base_nodos(base_datos)
+bd_dir="/home/pi/xbeeProyecto/basesTest/xbee_db02.db"
+connDB=db(bd_dir)
+lista_nodos=base_nodos(bd_dir)
 lcd.show_cursor(False)
 lcd.clear()
 print("Programa inicado")
-mostrarPantalla(lista_nodos[numeroMenu],base_datos)
+mostrarPantalla(lista_nodos[numeroMenu],bd_dir)
 
 while True:
     try:
         if GPIO.event_detected(4):
          numeroMenu=pulsador(numeroMenu,len(lista_nodos)-1)
-         mostrarPantalla(lista_nodos[numeroMenu],base_datos)
+         mostrarPantalla(lista_nodos[numeroMenu],bd_dir)
         
     except KeyboardInterrupt:
         lcd.clear()
