@@ -11,12 +11,12 @@ from datetime import timedelta,datetime
 class pantalla_lcd(object):
     def __init__(self,db_dir):
         #Conexión de pines
-        self.lcd_rs =7       #25
-        self.lcd_en =5       #24
-        self.lcd_d4 =6       #23
-        self.lcd_d5 =13      #17
-        self.lcd_d6 =19      #21
-        self.lcd_d7 =26      #22
+        self.lcd_rs =26           #7       
+        self.lcd_en =19           #5       
+        self.lcd_d4 =13           #6
+        self.lcd_d5 =6           #13
+        self.lcd_d6 =5           #19
+        self.lcd_d7 =11           #26
 
         #columnas y filas
         self.lcd_columns =20

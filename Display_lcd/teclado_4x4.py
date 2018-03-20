@@ -16,8 +16,8 @@ class keyb():
             ["7","8","9","C"],
             ["*","0","#","D"]
         ]
-        self.COL_PINS=[10,9,11,8]
-        self.ROW_PINS=[12,16,20,21]
+        self.COL_PINS=[27,22,10,9]
+        self.ROW_PINS=[2,3,4,17]
         self.factory=rpi_gpio.KeypadFactory()
         self.keypad=self.factory.create_keypad(keypad=self.KEYPAD,row_pins=self.ROW_PINS,col_pins=self.COL_PINS)
         #self.keypad.registerKeyPressHandler(funcionExt)
