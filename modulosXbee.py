@@ -1,5 +1,6 @@
 #Este archivo contiene las clases para el módulo coordinador, módulo sensor y 
 #la base de datos
+from base_datos import db
 import sqlite3
 
 class nodoXbee:
@@ -27,7 +28,7 @@ class nodoXbee:
 		'''
 		self.setTramaDic(trama_dic)
 		self.setAddress()
-		self.cnxDB=db("/home/pi/dataBases/dbTest01.db")
+		self.cnxDB=db("/home/pi/dataBases/dbTest02.db")
 		self.respuesta=self.cnxDB.consultaSimp('''SELECT direcc FROM nodoSensor''')
 		#print(self.respuesta)        
 		if (self.xbeeAddrStr,) not in self.respuesta:
