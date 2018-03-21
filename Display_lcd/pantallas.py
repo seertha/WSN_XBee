@@ -241,12 +241,12 @@ class infoGen(object):
         self.conFechaHora='''SELECT fecha_hora FROM datos ORDER BY fecha_hora DESC LIMIT 1'''
         self.ultimoRegistro=self.base.consultaSimp(self.conFechaHora)[0][0]
         self.aux1=self.ultimoRegistro.split(" ")
-        self.horaReg=self.aux1[0].split(":")
-        self.fechaReg=self.aux1[1].split("/")
+        self.horaReg=self.aux1[1].split(":")
+        self.fechaReg=self.aux1[0].split("-")
         self.aux_ini=datetime(int(self.fechaReg[2]),int(self.fechaReg[1]),int(self.fechaReg[0]),int(self.horaReg[0]),int(self.horaReg[1]),int(self.horaReg[2]))
         self.aux_final=self.aux_ini+self.rangoHora
-        self.horaInicio=self.aux_ini.strftime("%H:%M:%S %d/%m/%Y")
-        self.horaFinal=self.aux_final.strftime("%H:%M:%S %d/%m/%Y")
+        self.horaInicio=self.aux_ini.strftime("%d-%m-%Y %H:%M:%S")
+        self.horaFinal=self.aux_final.strftime("%d-%m-%Y %H:%M:%S")
         self.resConn=self.base.consultaDat('''SELECT nodo_id FROM datos WHERE fecha_hora
                             BETWEEN ? and ?''',(self.horaFinal,self.horaInicio))
         for e in self.resConn:

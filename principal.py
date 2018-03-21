@@ -18,7 +18,7 @@ def main():
 			tramaDatos=xbee.wait_read_frame()		#Espera la recepción de una trama de datos
 			datos=xbeeCoor.actualizarDatos(tramaDatos)	#Actualiza la trama en xbeeCoor
 			if datos==True:
-				tiempoDatos=strftime("%H:%M:%S %d/%m/%Y")
+				tiempoDatos=strftime("%d-%m-%Y %H:%M:%S")
 				xbeeCoor.guardarDatos(tiempoDatos)
 		except KeyboardInterrupt:
 			puerto_serie.close()

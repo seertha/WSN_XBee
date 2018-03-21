@@ -28,7 +28,7 @@ class nodoXbee:
 		'''
 		self.setTramaDic(trama_dic)
 		self.setAddress()
-		self.cnxDB=db("/home/pi/dataBases/dbTest02.db")
+		self.cnxDB=db("/home/pi/dataBases/dbTest03.db")
 		self.respuesta=self.cnxDB.consultaSimp('''SELECT direcc FROM nodoSensor''')
 		#print(self.respuesta)        
 		if (self.xbeeAddrStr,) not in self.respuesta:
