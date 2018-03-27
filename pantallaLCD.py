@@ -22,3 +22,9 @@ class LCDpantalla(object):
         self.lcd=LCD.Adafruit_CharLCD(self.lcd_rs,self.lcd_en,self.lcd_d4,self.lcd_d5,self.lcd_d6,self.lcd_d7,self.lcd_columns,self.lcd_rows)
         self.lcd.show_cursor(False)
         self.lcd.clear()
+
+#    def clear(self):
+#        self.lcd.clear()
+
+#    def set_cursor(self,x,y):
+#        self.lcd.set_cursor(x,y)  
