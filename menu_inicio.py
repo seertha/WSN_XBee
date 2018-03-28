@@ -16,8 +16,11 @@ def main():
         #tec.keypad.registerKeyPressHandler(boton_pulsado)
         pantallaInicio(panLCD)
         time.sleep(15)
-        panLCD.lcd.clear()
-        tec.keypad.cleanup()            
+        modo_selec(panLCD)
+        while True:
+            pass
+        #panLCD.lcd.clear()
+        #tec.keypad.cleanup()            
     except KeyboardInterrupt:
         panLCD.lcd.clear()
         tec.keypad.cleanup()
@@ -29,6 +32,14 @@ def pantallaInicio(panLCD):
     panLCD.lcd.message("ZIGBEE NETWORK")
     panLCD.lcd.set_cursor(7,2)
     panLCD.lcd.message("Ver.1")
+
+def modo_selec(panLCD):
+    panLCD.lcd.clear()
+    panLCD.lcd.message(" Elija una opcion:")
+    panLCD.lcd.set_cursor(0,2)
+    panLCD.lcd.message(" 1: Iniciar  2: Red")
+    panLCD.lcd.set_cursor(0,3)
+    panLCD.lcd.message("3: Reinicio")
 
 if __name__=="__main__":
     main()
