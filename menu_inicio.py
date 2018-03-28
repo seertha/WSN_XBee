@@ -39,7 +39,7 @@ def modo_selec(panLCD):
     panLCD.lcd.set_cursor(0,2)
     panLCD.lcd.message(" 1: Iniciar  2: Red")
     panLCD.lcd.set_cursor(0,3)
-    panLCD.lcd.message("3: Reinicio")
+    panLCD.lcd.message(" 3: Reinicio")
 
 if __name__=="__main__":
     main()
