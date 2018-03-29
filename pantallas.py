@@ -149,8 +149,8 @@ class pantalla_lcd(object):
                 th.start()
             except:
                 th=Thread(target=funcion)
-                th.start()
-    
+                th.start()    
+      
     def finalizar(self):
         self.lcd.clear()
         self.kpad.keypad.cleanup()
