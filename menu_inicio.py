@@ -1,7 +1,7 @@
 #Menú que se ejecuta en el arranque del sistema. Permite ejecutar
 #el programa principal
 
-#import visualizacion_lcd
+import visualizacion_lcd
 from teclado_4x4 import keyb
 from pantallaLCD import LCDpantalla
 import time
@@ -42,7 +42,9 @@ def modo_selec(panLCD):
     panLCD.lcd.message(" 3: Reinicio")
 
 def btn_pulsado(btn):
-    print(btn)
+    if btn == '1':
+        visualizacion_lcd.main()
+
 
 if __name__=="__main__":
     main()
