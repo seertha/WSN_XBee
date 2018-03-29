@@ -1,6 +1,6 @@
 #Clases para el manejo y muestra de pantallas.
 #LCD 20x4
-import Adafruit_CharLCD as LCD
+#import Adafruit_CharLCD as LCD
 import os.path
 from teclado_4x4 import keyb
 from time import strftime,sleep
@@ -9,23 +9,26 @@ from base_datos import db
 from datetime import timedelta,datetime
 
 class pantalla_lcd(object):
-    def __init__(self,db_dir):
-        #Conexión de pines
-        self.lcd_rs =26           #7       
-        self.lcd_en =19           #5       
-        self.lcd_d4 =13           #6
-        self.lcd_d5 =6           #13
-        self.lcd_d6 =5           #19
-        self.lcd_d7 =11           #26
+    def __init__(self,db_dir,panlcd):
+        ##Conexión de pines
+        #self.lcd_rs =26           #7       
+        #self.lcd_en =19           #5       
+        #self.lcd_d4 =13           #6
+        #self.lcd_d5 =6           #13
+        #self.lcd_d6 =5           #19
+        #self.lcd_d7 =11           #26
+#
+        ##columnas y filas
+        #self.lcd_columns =20
+        #self.lcd_rows =4
+#
+        ##Inicio LCD
+        #self.lcd=LCD.Adafruit_CharLCD(self.lcd_rs,self.lcd_en,self.lcd_d4,self.lcd_d5,self.lcd_d6,self.lcd_d7,self.lcd_columns,self.lcd_rows)
+        #self.lcd.show_cursor(False)
+        #self.lcd.clear()
 
-        #columnas y filas
-        self.lcd_columns =20
-        self.lcd_rows =4
-
-        #Inicio LCD
-        self.lcd=LCD.Adafruit_CharLCD(self.lcd_rs,self.lcd_en,self.lcd_d4,self.lcd_d5,self.lcd_d6,self.lcd_d7,self.lcd_columns,self.lcd_rows)
-        self.lcd.show_cursor(False)
-        self.lcd.clear()
+        #Pantalla LCD
+        self.lcd=panlcd
 
         #Teclado matricial 4x4
         self.kpad=keyb()
