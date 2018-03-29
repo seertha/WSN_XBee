@@ -57,6 +57,12 @@ class pantalla_lcd(object):
         self.th_ini_resumen=Thread(target=self.res.resMostrar)
         self.th_end_resumen=Thread(target=self.res.resSalir)
 
+    def saludoInicial(self):
+        self.lcd.set_cursor(2,1)
+        self.lcd.message("ZIGBEE NETWORK")
+        self.lcd.set_cursor(7,2)
+        self.lcd.message("Ver 1")
+
     def posicionPuntero(self,puntero):
         self.lcd.set_cursor(15,puntero)
         self.lcd.message("*")

@@ -28,3 +28,6 @@ class LCDpantalla(object):
 
 #    def set_cursor(self,x,y):
 #        self.lcd.set_cursor(x,y)  
+
+#    def message(self,mensaje):
+#        self.lcd.message(mensaje)
