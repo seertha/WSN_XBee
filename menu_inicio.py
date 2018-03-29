@@ -1,7 +1,7 @@
 #Menú que se ejecuta en el arranque del sistema. Permite ejecutar
 #el programa principal
 
-import visualizacion_lcd
+#import visualizacion_lcd
 from teclado_4x4 import keyb
 from pantallaLCD import LCDpantalla
 import time
@@ -13,10 +13,12 @@ def main():
     tec=keyb()
     try:
         print("Programa iniciado")
-        tec.keypad.registerKeyPressHandler(btn_pulsado)
+        #tec.keypad.registerKeyPressHandler(btn_pulsado)
         pantallaInicio(panLCD)
-        time.sleep(15)
+        time.sleep(5)
         modo_selec(panLCD)
+        tec.keypad.registerKeyPressHandler(btn_pulsado)
+        
         while True:
             pass
         #panLCD.lcd.clear()
@@ -43,7 +45,7 @@ def modo_selec(panLCD):
 
 def btn_pulsado(btn):
     if btn == '1':
-        visualizacion_lcd.main()
+        
 
 
 if __name__=="__main__":
