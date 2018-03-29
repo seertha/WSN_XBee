@@ -13,14 +13,14 @@ def main():
     tec=keyb()
     try:
         print("Programa iniciado")
-        #tec.keypad.registerKeyPressHandler(boton_pulsado)
+        tec.keypad.registerKeyPressHandler(btn_pulsado)
         pantallaInicio(panLCD)
         time.sleep(15)
         modo_selec(panLCD)
         while True:
             pass
         #panLCD.lcd.clear()
-        #tec.keypad.cleanup()            
+        #tec.keypad.cleanup()                    
     except KeyboardInterrupt:
         panLCD.lcd.clear()
         tec.keypad.cleanup()
@@ -40,6 +40,9 @@ def modo_selec(panLCD):
     panLCD.lcd.message(" 1: Iniciar  2: Red")
     panLCD.lcd.set_cursor(0,3)
     panLCD.lcd.message(" 3: Reinicio")
+
+def btn_pulsado(btn):
+    print(btn)
 
 if __name__=="__main__":
     main()
