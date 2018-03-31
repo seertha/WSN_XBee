@@ -83,6 +83,7 @@ class pantalla_lcd(object):
             self.puntero3=0
             self.nodos.nIndex=0
             self.res.mostrarCntrl=0
+            self.general.infoGenCtrl=0
             self.threadCheck(self.th_end_infoGen,self.general.salir_modo)
             self.threadCheck(self.th_end_nodosDet,self.nodos.salir_loop)
             self.threadCheck(self.th_end_resumen,self.res.resSalir)                           
@@ -112,6 +113,9 @@ class pantalla_lcd(object):
         elif self.controlAux==False and self.puntero==3:
             if boton=="*" or boton=="#":                
                 self.puntero3+=self.valorBoton(boton)
+                self.general.infoGen=self.puntero3
+                if self.general.infoGen>1: self.general.infoGen=1
+                if self.general.infoGen<1: self.general.infoGen=0
                 if self.puntero3>3: self.puntero3=3
                 if self.puntero3<0: self.puntero3=0 
                 print("puntero3= {}".format(self.puntero3))
@@ -192,6 +196,7 @@ class infoGen(object):
         self.unidad="B"
         self.size_aux=0
         self.nodosConn=""
+        self.infoGenCtrl=0
         
         
     def obtenerDatos(self):
@@ -205,28 +210,39 @@ class infoGen(object):
         #self.base=db(self.db_path)
         self.infoAux=True
         self.obtenerDatos()
-        #Muestra tamaño de la base de datos
-        self.lcdInfo.set_cursor(0,2)
-        self.lcdInfo.message("DB:")
-        self.lcdInfo.set_cursor(3,2)
-        self.lcdInfo.message(self.file_size)
-        self.lcdInfo.set_cursor(9,2)
-        self.lcdInfo.message(self.unidad)
-        #Muestra la cantidad de nodos conectados a la red
-        self.lcdInfo.set_cursor(0,3)
-        self.lcdInfo.message("Nodos en red:")
-        self.lcdInfo.set_cursor(13,3)
-        self.lcdInfo.message(self.nodosConn)
+
+        if self.infoGenCtrl==0:
+            #Muestra tamaño de la base de datos
+            self.lcdInfo.set_cursor(0,2)
+            self.lcdInfo.message("DB:")
+            self.lcdInfo.set_cursor(3,2)
+            self.lcdInfo.message(self.file_size)
+            self.lcdInfo.set_cursor(9,2)
+            self.lcdInfo.message(self.unidad)
+            #Muestra la cantidad de nodos conectados a la red
+            self.lcdInfo.set_cursor(0,3)
+            self.lcdInfo.message("Nodos en red:")
+            self.lcdInfo.set_cursor(13,3)
+            self.lcdInfo.message(self.nodosConn)
+
+            while self.infoAux==True:
+                self.obtenerDatos()
+                self.lcdInfo.set_cursor(0,1)
+                self.lcdInfo.message(self.tiempo)
+                self.lcdInfo.set_cursor(9,1)
+                self.lcdInfo.message(self.fecha)
+                sleep(1)
+                #self.base.cnxClose()
+                print("InfoGen loop-salida")
         
-        while self.infoAux==True:
-            self.obtenerDatos()
+        if self.infoGenCtrl==1:
+            #Muestra información sobre la conexión de red: SSID y dirección IP
+            self.mostrar()
             self.lcdInfo.set_cursor(0,1)
-            self.lcdInfo.message(self.tiempo)
-            self.lcdInfo.set_cursor(9,1)
-            self.lcdInfo.message(self.fecha)
-            sleep(1)
-        #self.base.cnxClose()
-        print("InfoGen Salida")
+            self.lcdInfo.message("SSID:")
+            self.lcdInfo.set_cursor(0,2)
+            self.lcdInfo.message("IP:")
+
 
 
     def mostrar(self):
