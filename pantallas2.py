@@ -145,8 +145,10 @@ class pantalla_lcd(object):
                 self.res.mostrarCntrl=self.puntero3 
 
         elif self.controlAux==False and self.puntero==4:
-            if boton=="1": print("Boton Reiniciar")
-            elif boton=="0": print("Boton Apagar")         
+            if boton=="1": 
+                self.opt.reiniciar()
+            elif boton=="0":
+                self.opt.apagar()         
                 
                 
     
@@ -532,9 +534,28 @@ class opciones(object):
         self.optLcd.clear()
         self.optLcd.set_cursor(5,0)
         self.optLcd.message("OPCIONES")
-        self.opt.set_cursor(0,2)
+        self.optLcd.set_cursor(0,2)
         self.optLcd.message("1: Reiniciar")
         self.optLcd.set_cursor(0,3)
         self.optLcd.message("0: Apagar")
+
+    def reiniciar(self):
+        print("Reiniciando...")
+        self.optLcd.clear()
+        self.optLcd.set_cursor(3,1)
+        self.optLcd.message("Reiniciando...")
+        sleep(3)
+        self.optLcd.clear()
+        subprocess.call("sudo reboot",shell=True)
+
+    def apagar(self):
+        print("Apagando...")
+        self.optLcd.clear()
+        self.optLcd.set_cursor(4,1)
+        self.optLcd.message("Apagando...")
+        sleep(3)
+        self.optLcd.clear()
+        subprocess.call("sudo halt",shell=True)
+
 
 
