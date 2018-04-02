@@ -2,6 +2,7 @@
 #LCD 20x4
 #import Adafruit_CharLCD as LCD
 import os.path
+import subprocess
 from teclado_4x4 import keyb
 from time import strftime,sleep
 from threading import Thread
@@ -64,11 +65,15 @@ class pantalla_lcd(object):
         self.lcd.message("Ver 1")
 
     def posicionPuntero(self,puntero):
-        self.lcd.set_cursor(15,puntero)
-        self.lcd.message("*")
+        if puntero<4:
+            self.lcd.set_cursor(15,puntero)
+            self.lcd.message("*")
+        else:
+            self.lcd.set_cursor(15,1)
+            self.lcd.message("*")
 
     def menuInicio(self,puntero=1):
-        self.modoSelec.mostrar(self.lcd)
+        self.modoSelec.mostrar(self.lcd,puntero)
         self.posicionPuntero(puntero)
     
     def botonPulsado(self,boton):        
@@ -86,7 +91,7 @@ class pantalla_lcd(object):
             self.general.infoGenCtrl=0
             self.threadCheck(self.th_end_infoGen,self.general.salir_modo)
             self.threadCheck(self.th_end_nodosDet,self.nodos.salir_loop)
-            self.threadCheck(self.th_end_resumen,self.res.resSalir)                           
+            self.threadCheck(self.th_end_resumen,self.res.resSalir)            
             self.controlAux=True
             self.menuInicio(self.puntero)
             print("Pantalla principal")
@@ -95,10 +100,23 @@ class pantalla_lcd(object):
         elif self.controlAux==True: 
             if boton=="C" or boton=="D":
                 self.puntero+=self.valorBoton(boton)
-                if self.puntero>3: self.puntero=3
+                if self.puntero>3: self.puntero=4
                 if self.puntero<1: self.puntero=1
                 print("boton {} presionado. Valor puntero {}".format(boton,self.puntero))
                 self.menuInicio(self.puntero)
+                
+        elif self.controlAux==False and self.puntero==1:
+            if boton=="#": 
+                self.general.infoGenCtrl=1
+                self.general.infoAux=False
+                print("Boton: {}  infoGenCtrl: {}  general.infoAux: {}".format(boton,self.general.infoGenCtrl,self.general.infoAux))
+                   
+            if boton=="*": 
+                self.general.infoGenCtrl=0
+                self.general.infoAux=True
+                print("Boton: {}  infoGenCtrl: {} general.infoAux: {}".format(boton,self.general.infoGenCtrl,self.general.infoAux))   
+                self.modo_enter(self.puntero)   
+                
         elif self.controlAux==False and self.puntero==2:
             self.listaAuxNodos=self.nodos.obtenerNodos()
             self.listaAuxNodos.sort()
@@ -113,9 +131,13 @@ class pantalla_lcd(object):
         elif self.controlAux==False and self.puntero==3:
             if boton=="*" or boton=="#":                
                 self.puntero3+=self.valorBoton(boton)
-                self.general.infoGen=self.puntero3
-                if self.general.infoGen>1: self.general.infoGen=1
-                if self.general.infoGen<1: self.general.infoGen=0
+                #self.general.infoGen=self.puntero3
+                #if self.general.infoGen>0: 
+                #    self.general.infoGen=1
+                #    self.general.infoAux=False
+                #if self.general.infoGen<1: 
+                #   self.general.infoGen=0
+                #   self.general.infoAux=True
                 if self.puntero3>3: self.puntero3=3
                 if self.puntero3<0: self.puntero3=0 
                 print("puntero3= {}".format(self.puntero3))
@@ -172,15 +194,19 @@ class pantalla_lcd(object):
 
 #################################################################
 class seleccion_modo(object):
-    def mostrar(self,lcd):
+    def mostrar(self,lcd,puntero):
         lcd.clear()
         lcd.message(" SELECCION DE MODO:")
-        lcd.set_cursor(1,1)
-        lcd.message("Info. General")
-        lcd.set_cursor(1,2)
-        lcd.message("Nodos Detalle")
-        lcd.set_cursor(1,3)
-        lcd.message("Resumen")
+        if puntero<4:
+            lcd.set_cursor(1,1)
+            lcd.message("Info. General")
+            lcd.set_cursor(1,2)
+            lcd.message("Nodos Detalle")
+            lcd.set_cursor(1,3)
+            lcd.message("Resumen")
+        elif puntero==4:
+            lcd.set_cursor(1,1)
+            lcd.message("Opciones")
 
 ################################################################
 class infoGen(object):
@@ -197,6 +223,8 @@ class infoGen(object):
         self.size_aux=0
         self.nodosConn=""
         self.infoGenCtrl=0
+        self.SSID=""
+        self.ipAddr=""
         
         
     def obtenerDatos(self):
@@ -204,6 +232,8 @@ class infoGen(object):
         self.fecha=strftime("%d/%m/%Y")
         self.file_size=str(self.tam_archivo(self.db_path))
         self.nodosConn=str(len(self.nodosEnRed()))
+        self.SSID=self.getSSID()
+        self.ipAddr=self.getIpAddr()
 
     
     def mostrarDatos(self):
@@ -233,15 +263,22 @@ class infoGen(object):
                 self.lcdInfo.message(self.fecha)
                 sleep(1)
                 #self.base.cnxClose()
-                print("InfoGen loop-salida")
+            print("InfoGen loop-salida")
         
-        if self.infoGenCtrl==1:
-            #Muestra información sobre la conexión de red: SSID y dirección IP
-            self.mostrar()
-            self.lcdInfo.set_cursor(0,1)
-            self.lcdInfo.message("SSID:")
-            self.lcdInfo.set_cursor(0,2)
-            self.lcdInfo.message("IP:")
+            if self.infoGenCtrl==1:
+                #Muestra información sobre la conexión de red: SSID y dirección IP
+                self.mostrar()
+                self.lcdInfo.set_cursor(0,1)
+                self.lcdInfo.message("RED")
+                self.lcdInfo.set_cursor(0,2)
+                self.lcdInfo.message("SSID:")
+                self.lcdInfo.set_cursor(5,2)
+                self.lcdInfo.message(self.SSID)
+                self.lcdInfo.set_cursor(0,3)
+                self.lcdInfo.message("IP:")
+                self.lcdInfo.set_cursor(3,3)
+                self.lcdInfo.message(self.ipAddr)
+                print("Pantalla info 2")
 
 
 
@@ -280,6 +317,18 @@ class infoGen(object):
         self.base.cnxClose()        
         return self.nodosLista
 
+    def getSSID(self):
+        self.proc1=subprocess.Popen(['iwgetid'],stdout=subprocess.PIPE)
+        self.resAux=self.proc1.communicate()[0].decode('utf-8')
+        self.res=self.resAux[17:len(self.resAux)-2]
+        self.proc1.stdout.close()
+        return self.res
+    
+    def getIpAddr(self):
+        self.commAux=subprocess.check_output(['hostname','-I']).split()[0]
+        self.ipAux=self.commAux.decode('utf-8')
+        return self.ipAux
+        
     def salir_modo(self):
         self.infoAux=False
 ################################################################
