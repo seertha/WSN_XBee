@@ -41,6 +41,7 @@ class pantalla_lcd(object):
         self.general=infoGen(self.lcd,self.db_path)
         self.nodos=nodosDetalle(self.lcd,self.db_path)
         self.res=resumen(self.lcd,self.db_path)
+        self.opt=opciones(self.lcd)
 
         #Puntero de selección
         self.puntero=1
@@ -141,7 +142,11 @@ class pantalla_lcd(object):
                 if self.puntero3>3: self.puntero3=3
                 if self.puntero3<0: self.puntero3=0 
                 print("puntero3= {}".format(self.puntero3))
-                self.res.mostrarCntrl=self.puntero3          
+                self.res.mostrarCntrl=self.puntero3 
+
+        elif self.controlAux==False and self.puntero==4:
+            if boton=="1": print("Boton Reiniciar")
+            elif boton=="0": print("Boton Apagar")         
                 
                 
     
@@ -164,7 +169,10 @@ class pantalla_lcd(object):
             self.threadCheck(self.th_ini_nodosDet,self.nodos.mostrar)
 
         elif punteroPos==3:
-            self.threadCheck(self.th_ini_resumen,self.res.resMostrar)            
+            self.threadCheck(self.th_ini_resumen,self.res.resMostrar) 
+
+        elif punteroPos==4:
+            self.opt.mostrar()           
     
     def threadCheckArg(self,th,funcion,arg):
         '''
@@ -516,5 +524,17 @@ class resumen(object):
     def resSalir(self):        
         self.resLoopAux=False
 
+###################################################################################################################################################
+class opciones(object):
+    def __init__(self,lcd):
+        self.optLcd=lcd
+    def mostrar(self):
+        self.optLcd.clear()
+        self.optLcd.set_cursor(5,0)
+        self.optLcd.message("OPCIONES")
+        self.opt.set_cursor(0,2)
+        self.optLcd.message("1: Reiniciar")
+        self.optLcd.set_cursor(0,3)
+        self.optLcd.message("0: Apagar")
 
 
