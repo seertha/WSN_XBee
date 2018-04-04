@@ -298,7 +298,8 @@ class infoGen(object):
 
     def tam_archivo(self,db_path):
         self.size_aux=os.path.getsize(db_path)
-        if len(str(self.size_aux))>3 and len(str(self.size_aux))<6: 
+        #print("Tamaño base: {}".format(len(str(self.size_aux))))
+        if len(str(self.size_aux))>3 and len(str(self.size_aux))<=6: 
             self.size_aux/=1000
             self.unidad="KB"
         elif len(str(self.size_aux))>6:
@@ -310,17 +311,24 @@ class infoGen(object):
         self.base=db(self.db_path)
         self.nodosLista=[]
         self.rangoHora=timedelta(minutes=-10)
-        self.conFechaHora='''SELECT fecha_hora FROM datos ORDER BY fecha_hora DESC LIMIT 1'''
+        self.conFechaHora='''SELECT fecha_hora FROM datos ORDER BY datetime(fecha_hora) DESC LIMIT 1'''
         self.ultimoRegistro=self.base.consultaSimp(self.conFechaHora)[0][0]
-        self.aux1=self.ultimoRegistro.split(" ")
-        self.horaReg=self.aux1[1].split(":")
-        self.fechaReg=self.aux1[0].split("-")
-        self.aux_ini=datetime(int(self.fechaReg[2]),int(self.fechaReg[1]),int(self.fechaReg[0]),int(self.horaReg[0]),int(self.horaReg[1]),int(self.horaReg[2]))
+        #print("ultimoRegistro:{}".format(self.ultimoRegistro))
+        #self.aux1=self.ultimoRegistro.split("T")
+        #self.horaReg=self.aux1[1].split(":")
+        #self.fechaReg=self.aux1[0].split("-")
+        #print("fechaReg:{}  horaReg:{}".format(self.fechaReg,self.horaReg))
+        #self.aux_ini=datetime(int(self.fechaReg[0]),int(self.fechaReg[1]),int(self.fechaReg[0]),int(self.horaReg[0]),int(self.horaReg[1]),float(self.horaReg[2]))
+        self.aux_ini=datetime.strptime(self.ultimoRegistro,'%Y-%m-%dT%H:%M:%S.%f')
         self.aux_final=self.aux_ini+self.rangoHora
-        self.horaInicio=self.aux_ini.strftime("%d-%m-%Y %H:%M:%S")
-        self.horaFinal=self.aux_final.strftime("%d-%m-%Y %H:%M:%S")
+        #print("aux_ini:{}  aux_final:{}".format(self.aux_ini,self.aux_final))
+        #self.horaInicio=self.aux_ini.strftime("%d-%m-%Y %H:%M:%S")
+        self.horaFinal=self.aux_final.strftime("%Y-%m-%dT%H:%M:%S.%f")
+        #print("horaFinal:{}  ultimoReg:{}".format(self.horaFinal,self.ultimoRegistro))
         self.resConn=self.base.consultaDat('''SELECT nodo_id FROM datos WHERE fecha_hora
-                            BETWEEN ? and ?''',(self.horaFinal,self.horaInicio))
+                            BETWEEN ? and ? ORDER BY datetime(fecha_hora) DESC
+                            LIMIT 1 ''',(self.horaFinal,self.ultimoRegistro))
+        #print("resConn:{}  len:{}".format(self.resConn,len(self.resConn)))
         for e in self.resConn:
             if e[0] not in self.nodosLista:
                 self.nodosLista.append(e[0])
@@ -361,7 +369,7 @@ class nodosDetalle(object):
         self.nodoSensor=self.lista_nodos[self.nIndex]
         self.sql_con=('''SELECT temperatura,humedadR,lux
             FROM datos WHERE nodo_id={}
-            ORDER BY fecha_hora DESC
+            ORDER BY datetime(fecha_hora) DESC
             LIMIT 1'''.format(self.nodoSensor))
         self.respAux=self.base.consultaSimp(self.sql_con)
         self.temp=str(self.respAux[0][0])
