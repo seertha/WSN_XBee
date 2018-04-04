@@ -298,10 +298,10 @@ class infoGen(object):
 
     def tam_archivo(self,db_path):
         self.size_aux=os.path.getsize(db_path)
-        if len(str(self.size_aux))>3: 
+        if len(str(self.size_aux))>3 and len(str(self.size_aux))<6: 
             self.size_aux/=1000
             self.unidad="KB"
-        if len(str(self.size_aux))>6:
+        elif len(str(self.size_aux))>6:
             self.size_aux/=1000000
             self.unidad="MB"   
         return round(self.size_aux,1)  
