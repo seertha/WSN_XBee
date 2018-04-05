@@ -518,14 +518,18 @@ class resumen(object):
     def maxMin(self,parametro,medida):
         self.parametro=parametro
         self.cnxBase=db(self.resPath)
-        self.inicioDia='00:00:00 '+datetime.now().strftime("%d/%m/%Y")
+        #self.inicioDia='00:00:00 '+datetime.now().strftime("%d/%m/%Y")
         #print(self.inicioDia)
-        self.finDia='23:59:59 '+datetime.now().strftime("%d/%m/%Y")
+        #self.finDia='23:59:59 '+datetime.now().strftime("%d/%m/%Y")
         #self.inicioDia="00:00:00 13/07/2017"
         #self.finDia="23:59:59 13/07/2017"
-        self.sqlDia='''SELECT nodo_id,{}({}) AS max
-                    FROM(SELECT nodo_id,{} FROM datos WHERE fecha_hora BETWEEN ? AND ?)'''.format(medida,self.parametro,self.parametro)
-        self.resConsulta=self.cnxBase.consultaDat(self.sqlDia,(self.inicioDia,self.finDia))
+        self.tmpAux=datetime.now()
+        self.inicioDia=self.tmpAux.date().strftime("%Y-%m-%d")+"T00:00:00.000000"
+        self.tmpActual=self.tmpAux.strftime("%Y-%m-%dT%H:%M:%S.%f")
+        self.sqlDia='''SELECT nodo_id,{}({}) AS maxMin FROM datos
+                       WHERE datetime(fecha_hora)
+                       BETWEEN datetime(?) AND datetime(?)'''.format(medida,self.parametro)
+        self.resConsulta=self.cnxBase.consultaDat(self.sqlDia,(self.inicioDia,self.tmpActual))
         return self.resConsulta
 
     def resObtenerDatos(self):
