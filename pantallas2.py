@@ -238,12 +238,14 @@ class infoGen(object):
         
         
     def obtenerDatos(self):
-        self.tiempo=strftime("%H:%M:%S")
-        self.fecha=strftime("%d/%m/%Y")
-        self.file_size=str(self.tam_archivo(self.db_path))
-        self.nodosConn=str(len(self.nodosEnRed()))
-        self.SSID=self.getSSID()
-        self.ipAddr=self.getIpAddr()
+        if self.infoGenCtrl==0:
+            self.tiempo=strftime("%H:%M:%S")
+            self.fecha=strftime("%d/%m/%Y")
+            self.file_size=str(self.tam_archivo(self.db_path))
+            self.nodosConn=str(len(self.nodosEnRed()))
+        elif self.infoGenCtrl==1:
+            self.SSID=self.getSSID()
+            self.ipAddr=self.getIpAddr()
 
     
     def mostrarDatos(self):
@@ -278,6 +280,7 @@ class infoGen(object):
             if self.infoGenCtrl==1:
                 #Muestra información sobre la conexión de red: SSID y dirección IP
                 self.mostrar()
+                self.obtenerDatos()
                 self.lcdInfo.set_cursor(0,1)
                 self.lcdInfo.message("RED")
                 self.lcdInfo.set_cursor(0,2)
@@ -311,23 +314,25 @@ class infoGen(object):
         self.base=db(self.db_path)
         self.nodosLista=[]
         self.rangoHora=timedelta(minutes=-10)
-        self.conFechaHora='''SELECT fecha_hora FROM datos ORDER BY datetime(fecha_hora) DESC LIMIT 1'''
-        self.ultimoRegistro=self.base.consultaSimp(self.conFechaHora)[0][0]
+        #self.conFechaHora='''SELECT fecha_hora FROM datos ORDER BY datetime(fecha_hora) DESC LIMIT 1'''
+        #self.ultimoRegistro=self.base.consultaSimp(self.conFechaHora)[0][0]
+        self.fechaHoraActual=datetime.now()
         #print("ultimoRegistro:{}".format(self.ultimoRegistro))
         #self.aux1=self.ultimoRegistro.split("T")
         #self.horaReg=self.aux1[1].split(":")
         #self.fechaReg=self.aux1[0].split("-")
         #print("fechaReg:{}  horaReg:{}".format(self.fechaReg,self.horaReg))
         #self.aux_ini=datetime(int(self.fechaReg[0]),int(self.fechaReg[1]),int(self.fechaReg[0]),int(self.horaReg[0]),int(self.horaReg[1]),float(self.horaReg[2]))
-        self.aux_ini=datetime.strptime(self.ultimoRegistro,'%Y-%m-%dT%H:%M:%S.%f')
-        self.aux_final=self.aux_ini+self.rangoHora
+        #self.aux_ini=datetime.strptime(self.ultimoRegistro,'%Y-%m-%dT%H:%M:%S.%f')
+        self.aux_ini=self.fechaHoraActual.strftime("%Y-%m-%dT%H:%M:%S.%f")
+        self.aux_final=self.fechaHoraActual+self.rangoHora
         #print("aux_ini:{}  aux_final:{}".format(self.aux_ini,self.aux_final))
         #self.horaInicio=self.aux_ini.strftime("%d-%m-%Y %H:%M:%S")
         self.horaFinal=self.aux_final.strftime("%Y-%m-%dT%H:%M:%S.%f")
         #print("horaFinal:{}  ultimoReg:{}".format(self.horaFinal,self.ultimoRegistro))
         self.resConn=self.base.consultaDat('''SELECT nodo_id FROM datos WHERE fecha_hora
                             BETWEEN ? and ? ORDER BY datetime(fecha_hora) DESC
-                            LIMIT 1 ''',(self.horaFinal,self.ultimoRegistro))
+                            LIMIT 1 ''',(self.horaFinal,self.aux_ini))
         #print("resConn:{}  len:{}".format(self.resConn,len(self.resConn)))
         for e in self.resConn:
             if e[0] not in self.nodosLista:
@@ -343,7 +348,9 @@ class infoGen(object):
         return self.res
     
     def getIpAddr(self):
-        self.commAux=subprocess.check_output(['hostname','-I']).split()[0]
+        self.commAux1=subprocess.check_output(['hostname','-I'])
+        print("commAux1:{}".format(self.commAux1))
+        self.commAux=self.commAux1.split()[0]
         self.ipAux=self.commAux.decode('utf-8')
         return self.ipAux
         
