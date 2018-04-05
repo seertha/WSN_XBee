@@ -530,9 +530,14 @@ class resumen(object):
 
     def resObtenerDatos(self):
         self.res_db=db(self.resPath)
+        self.t1Aux=datetime.now()
+        self.t2=self.t1Aux.date().strftime("%Y-%m-%d")+"T00:00:00.000000"
+        self.t1=self.t1Aux.strftime("%Y-%m-%dT%H:%M:%S.%f")
         self.sqlRes='''SELECT round(avg(temperatura),1) AS temAvg, round(avg(humedadR),1) AS humAvg, round(avg(lux),1) AS luxAvg
-                    FROM (SELECT temperatura,humedadR,lux FROM datos GROUP BY nodo_id)'''
-        self.reslsAux=self.res_db.consultaSimp(self.sqlRes)
+                    FROM datos WHERE datetime(fecha_hora)
+                    BETWEEN datetime(?) AND datetime(?) '''
+        #self.reslsAux=self.res_db.consultaSimp(self.sqlRes)
+        self.reslsAux=self.res_db.consultaDat(self.sqlRes,(self.t2,self.t1))
         self.tempPromedio=self.reslsAux[0][0]
         self.humPromedio=self.reslsAux[0][1]
         self.luxPromedio=self.reslsAux[0][2]
