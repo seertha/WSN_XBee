@@ -332,7 +332,7 @@ class infoGen(object):
         #print("horaFinal:{}  ultimoReg:{}".format(self.horaFinal,self.ultimoRegistro))
         self.resConn=self.base.consultaDat('''SELECT nodo_id FROM datos WHERE fecha_hora
                             BETWEEN ? and ? ORDER BY datetime(fecha_hora) DESC
-                            LIMIT 1 ''',(self.horaFinal,self.aux_ini))
+                            ''',(self.horaFinal,self.aux_ini))
         #print("resConn:{}  len:{}".format(self.resConn,len(self.resConn)))
         for e in self.resConn:
             if e[0] not in self.nodosLista:
