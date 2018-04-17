@@ -1,9 +1,9 @@
 #Módulo principal
 from xbee import XBee,ZigBee
 from modulosXbee import nodoXbee
-#from time import localtime, strftime
 import datetime
 import serial
+import logging
 
 def main():
 	'''
@@ -13,7 +13,8 @@ def main():
 	puerto_serie=serial.Serial('/dev/ttyUSB0',9600)
 	xbee=ZigBee(puerto_serie)
 	xbeeCoor=nodoXbee()						#objeto coordinador
-	
+	logging.basicConfig(filename='/home/pi/xbeeProyecto/logs/principal.log',format=('%(asctime)s %(message)s'),level=logging.DEBUG)
+	logging.info("Programa principal.py iniciado.")
 	while True:
 		try:
 			tramaDatos=xbee.wait_read_frame()		#Espera la recepción de una trama de datos

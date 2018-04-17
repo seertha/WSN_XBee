@@ -2,6 +2,7 @@
 #la base de datos
 from base_datos import db
 import sqlite3
+import logging
 
 class nodoXbee:
 	'Representa un nodo coordinador en una red XBEE'
@@ -79,6 +80,7 @@ class nodoXbee:
 		Guarda la dirección y el nodo_id de un nuevo nodo sensor
 		'''
 		print("LLamado a método nuevoNodo")
+		logging.info("Nuevo nodo agregado: %s",self.xbeeAddrStr)
 		nodoXbee.lista_nodos[self.xbeeAddrStr]=xbeeSensor()
 		self.respuesta=self.cnxDB.consultaSimp('''SELECT nodo_id FROM nodoSensor ORDER BY nodo_id DESC LIMIT 1''')
 		if(len(self.respuesta)==0):
@@ -92,6 +94,7 @@ class nodoXbee:
 		Actualiza el diccionario lista_nodos.
 		'''
 		print("Llamado a método agregarNodoLista")
+		logging.info("Nodo %s agregado",self.xbeeAddrStr)
 		self.respuesta=self.cnxDB.consultaDat('''SELECT nodo_id FROM nodoSensor WHERE direcc=?''',(self.xbeeAddrStr,))
 		nodoXbee.lista_nodos[self.xbeeAddrStr]=xbeeSensor()
 		nodoXbee.lista_nodos[self.xbeeAddrStr].id=self.respuesta[0][0]
@@ -106,6 +109,7 @@ class nodoXbee:
 		except UnicodeDecodeError:
 			self.aux1=False
 			print("UnicodeError")
+			logging.info("Unicode error en nodo: %s",self.xbeeAddrStr)
 			
 
 class xbeeSensor():
@@ -133,6 +137,7 @@ class xbeeSensor():
 			self.lux=int(self.listaDatos[2])
 		else:
 			print ("Datos insuficientes en listaDatos:{}".format(self.listaDatos))
+			logging.info("Error de datos en Nodo: %s",str(self.id))
 		#except IndexError:
 			#print("IndexError-listaDatos:{}".format(self.listaDatos))
 		
@@ -148,44 +153,4 @@ class xbeeSensor():
 		'Retorna el valor de lux'
 		return self.lux
 
-#class db():
-#	'''
-#	Maneja las conexiones con la base de datos.
-#	'''
-#
-#	def __init__(self,db_path):
-#		'''
-#		Crea la conexión con la base de datos.
-#		'''
-#		self.cnx=sqlite3.connect(db_path)
-#		self.cur=self.cnx.cursor()
-#
-#	def consultaSimp(self,sql):
-#		'''
-#		Consulta de datos simple
-#		'''
-#		self.cur.execute(sql)
-#		return self.cur.fetchall()
-#
-#	def consultaDat(self,sql,datos):
-#		'''
-#		Consulta con varios parámetros.
-#		'''
-#		self.cur.execute(sql,datos)
-#		return self.cur.fetchall()        
-#
-#	def insertarDatos(self,sql,datos):
-#		'''
-#		Inserta datos en la base de datos.
-#		'''
-#		self.cur.executemany(sql,datos)
-#		self.cnx.commit()
-#
-#	def cnxClose(self):
-#		'''
-#		Cierra la conexión con la base de datos.
-#		'''
-#		self.cnx.close()
-#		
-#	 
-#
+
