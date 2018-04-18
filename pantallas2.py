@@ -11,23 +11,7 @@ from datetime import timedelta,datetime
 
 class pantalla_lcd(object):
     def __init__(self,db_dir,panlcd):
-        ##Conexión de pines
-        #self.lcd_rs =26           #7       
-        #self.lcd_en =19           #5       
-        #self.lcd_d4 =13           #6
-        #self.lcd_d5 =6           #13
-        #self.lcd_d6 =5           #19
-        #self.lcd_d7 =11           #26
-#
-        ##columnas y filas
-        #self.lcd_columns =20
-        #self.lcd_rows =4
-#
-        ##Inicio LCD
-        #self.lcd=LCD.Adafruit_CharLCD(self.lcd_rs,self.lcd_en,self.lcd_d4,self.lcd_d5,self.lcd_d6,self.lcd_d7,self.lcd_columns,self.lcd_rows)
-        #self.lcd.show_cursor(False)
-        #self.lcd.clear()
-
+       
         #Pantalla LCD
         self.lcd=panlcd
 
@@ -132,13 +116,6 @@ class pantalla_lcd(object):
         elif self.controlAux==False and self.puntero==3:
             if boton=="*" or boton=="#":                
                 self.puntero3+=self.valorBoton(boton)
-                #self.general.infoGen=self.puntero3
-                #if self.general.infoGen>0: 
-                #    self.general.infoGen=1
-                #    self.general.infoAux=False
-                #if self.general.infoGen<1: 
-                #   self.general.infoGen=0
-                #   self.general.infoAux=True
                 if self.puntero3>3: self.puntero3=3
                 if self.puntero3<0: self.puntero3=0 
                 print("puntero3= {}".format(self.puntero3))
@@ -314,22 +291,10 @@ class infoGen(object):
         self.base=db(self.db_path)
         self.nodosLista=[]
         self.rangoHora=timedelta(minutes=-10)
-        #self.conFechaHora='''SELECT fecha_hora FROM datos ORDER BY datetime(fecha_hora) DESC LIMIT 1'''
-        #self.ultimoRegistro=self.base.consultaSimp(self.conFechaHora)[0][0]
         self.fechaHoraActual=datetime.now()
-        #print("ultimoRegistro:{}".format(self.ultimoRegistro))
-        #self.aux1=self.ultimoRegistro.split("T")
-        #self.horaReg=self.aux1[1].split(":")
-        #self.fechaReg=self.aux1[0].split("-")
-        #print("fechaReg:{}  horaReg:{}".format(self.fechaReg,self.horaReg))
-        #self.aux_ini=datetime(int(self.fechaReg[0]),int(self.fechaReg[1]),int(self.fechaReg[0]),int(self.horaReg[0]),int(self.horaReg[1]),float(self.horaReg[2]))
-        #self.aux_ini=datetime.strptime(self.ultimoRegistro,'%Y-%m-%dT%H:%M:%S.%f')
         self.aux_ini=self.fechaHoraActual.strftime("%Y-%m-%dT%H:%M:%S.%f")
         self.aux_final=self.fechaHoraActual+self.rangoHora
-        #print("aux_ini:{}  aux_final:{}".format(self.aux_ini,self.aux_final))
-        #self.horaInicio=self.aux_ini.strftime("%d-%m-%Y %H:%M:%S")
         self.horaFinal=self.aux_final.strftime("%Y-%m-%dT%H:%M:%S.%f")
-        #print("horaFinal:{}  ultimoReg:{}".format(self.horaFinal,self.ultimoRegistro))
         self.resConn=self.base.consultaDat('''SELECT nodo_id FROM datos WHERE fecha_hora
                             BETWEEN ? and ? ORDER BY datetime(fecha_hora) DESC
                             ''',(self.horaFinal,self.aux_ini))
@@ -382,10 +347,7 @@ class nodosDetalle(object):
         self.temp=str(self.respAux[0][0])
         self.humR=str(self.respAux[0][1])
         self.lux=str(self.respAux[0][2])
-        #print(self.respAux)
-        #print(self.lista_nodos) 
-
-        
+                
 
     def obtenerNodos(self):
         '''
@@ -461,8 +423,7 @@ class resumen(object):
                 self.resLcd.clear()
                 while self.mostrarCntrl==1 and self.resLoopAux==True:
                     self.maxMinMostrar("temperatura")
-                    sleep(1)
-                  
+                    sleep(1)                  
 
             elif self.mostrarCntrl==2:
                 self.resLcd.clear()
@@ -474,8 +435,7 @@ class resumen(object):
                 self.resLcd.clear()
                 while self.mostrarCntrl==3 and self.resLoopAux==True:
                     self.maxMinMostrar("lux")
-                    sleep(1)                            
-                
+                    sleep(1)               
             
         print("while out")
 
@@ -511,18 +471,11 @@ class resumen(object):
         self.resLcd.message(str(self.parValMin))
         self.resLcd.set_cursor(10,3)
         self.resLcd.message("NODO:")
-        self.resLcd.message(str(self.nodoIdMin))
-            
-            
+        self.resLcd.message(str(self.nodoIdMin))           
 
     def maxMin(self,parametro,medida):
         self.parametro=parametro
-        self.cnxBase=db(self.resPath)
-        #self.inicioDia='00:00:00 '+datetime.now().strftime("%d/%m/%Y")
-        #print(self.inicioDia)
-        #self.finDia='23:59:59 '+datetime.now().strftime("%d/%m/%Y")
-        #self.inicioDia="00:00:00 13/07/2017"
-        #self.finDia="23:59:59 13/07/2017"
+        self.cnxBase=db(self.resPath)        
         self.tmpAux=datetime.now()
         self.inicioDia=self.tmpAux.date().strftime("%Y-%m-%d")+"T00:00:00.000000"
         self.tmpActual=self.tmpAux.strftime("%Y-%m-%dT%H:%M:%S.%f")
@@ -544,8 +497,7 @@ class resumen(object):
         self.reslsAux=self.res_db.consultaDat(self.sqlRes,(self.t2,self.t1))
         self.tempPromedio=self.reslsAux[0][0]
         self.humPromedio=self.reslsAux[0][1]
-        self.luxPromedio=self.reslsAux[0][2]
-                
+        self.luxPromedio=self.reslsAux[0][2]                
         
     def resSalir(self):        
         self.resLoopAux=False
