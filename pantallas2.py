@@ -333,20 +333,29 @@ class nodosDetalle(object):
         self.humR=""
         self.lux=""
         self.nodosAux=True
+        self.nodos_0=False
 
     def obtenerDatos(self):
         self.base=db(self.db_path)
         self.lista_nodos=self.obtenerNodos() 
-        self.lista_nodos.sort() 
-        self.nodoSensor=self.lista_nodos[self.nIndex]
-        self.sql_con=('''SELECT temperatura,humedadR,lux
-            FROM datos WHERE nodo_id={}
-            ORDER BY datetime(fecha_hora) DESC
-            LIMIT 1'''.format(self.nodoSensor))
-        self.respAux=self.base.consultaSimp(self.sql_con)
-        self.temp=str(self.respAux[0][0])
-        self.humR=str(self.respAux[0][1])
-        self.lux=str(self.respAux[0][2])
+        self.lista_nodos.sort()
+        if len(self.lista_nodos)==0:
+            self.nodos_0=True
+            #self.lcdNodos.set_cursor(9,1)
+            #self.lcdNodos.message("!")
+            #self.lcdNodos.set_cursor(1,2)
+            #self.lcdNodos.message("NODOS SIN CONEXION")
+        else:
+            self.nodos_0=False 
+            self.nodoSensor=self.lista_nodos[self.nIndex]
+            self.sql_con=('''SELECT temperatura,humedadR,lux
+                FROM datos WHERE nodo_id={}
+                ORDER BY datetime(fecha_hora) DESC
+                LIMIT 1'''.format(self.nodoSensor))
+            self.respAux=self.base.consultaSimp(self.sql_con)
+            self.temp=str(self.respAux[0][0])
+            self.humR=str(self.respAux[0][1])
+            self.lux=str(self.respAux[0][2])
                 
 
     def obtenerNodos(self):
@@ -363,25 +372,34 @@ class nodosDetalle(object):
         
         while self.nodosAux==True:
             self.obtenerDatos()
-            self.lcdNodos.set_cursor(7,0)
-            self.lcdNodos.message("NODO #")
-            self.lcdNodos.set_cursor(13,0)
-            self.lcdNodos.message(str(self.lista_nodos[self.nIndex]))
-            self.lcdNodos.set_cursor(0,1)
-            self.lcdNodos.message("TEMP:")
-            self.lcdNodos.set_cursor(6,1)
-            self.lcdNodos.message(self.temp)
-            self.lcdNodos.set_cursor(0,2)
-            self.lcdNodos.message("HUMR:")
-            self.lcdNodos.set_cursor(6,2)
-            self.lcdNodos.message(self.humR)
-            self.lcdNodos.set_cursor(0,3)
-            self.lcdNodos.message("LUX :")
-            self.lcdNodos.set_cursor(6,3)
-            self.lcdNodos.message(self.lux)
-            sleep(1)
+            if self.nodos_0==False:
+                self.lcdNodos.set_cursor(7,0)
+                self.lcdNodos.message("NODO #")
+                self.lcdNodos.set_cursor(13,0)
+                self.lcdNodos.message(str(self.lista_nodos[self.nIndex]))
+                self.lcdNodos.set_cursor(0,1)
+                self.lcdNodos.message("TEMP:")
+                self.lcdNodos.set_cursor(6,1)
+                self.lcdNodos.message(self.temp)
+                self.lcdNodos.set_cursor(0,2)
+                self.lcdNodos.message("HUMR:")
+                self.lcdNodos.set_cursor(6,2)
+                self.lcdNodos.message(self.humR)
+                self.lcdNodos.set_cursor(0,3)
+                self.lcdNodos.message("LUX :")
+                self.lcdNodos.set_cursor(6,3)
+                self.lcdNodos.message(self.lux)
+                sleep(1)
+
+            elif self.nodos_0==True:
+                self.lcdNodos.set_cursor(9,1)
+                self.lcdNodos.message("!")
+                self.lcdNodos.set_cursor(1,2)
+                self.lcdNodos.message("NODOS SIN CONEXION")
+
 
     def salir_loop(self):
+        self.lcdNodos.clear()
         self.nodosAux=False
 #######################################################################
 class resumen(object):

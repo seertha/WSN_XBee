@@ -80,8 +80,9 @@ class nodoXbee:
 		Guarda la dirección y el nodo_id de un nuevo nodo sensor
 		'''
 		print("LLamado a método nuevoNodo")
-		logging.info("Nuevo nodo agregado: %s",self.xbeeAddrStr)
+		#logging.info("Nuevo nodo agregado: %s",self.xbeeAddrStr)
 		nodoXbee.lista_nodos[self.xbeeAddrStr]=xbeeSensor()
+		logging.info("Nuevo nodo agregado: %s NODO: %s",self.xbeeAddrStr,str(nodoXbee.lista_nodos[self.xbeeAddrStr].id))
 		self.respuesta=self.cnxDB.consultaSimp('''SELECT nodo_id FROM nodoSensor ORDER BY nodo_id DESC LIMIT 1''')
 		if(len(self.respuesta)==0):
 			self.cnxDB.insertarDatos('''INSERT INTO nodoSensor(nodo_id,direcc) VALUES(?,?)''',[(nodoXbee.lista_nodos[self.xbeeAddrStr].id,self.xbeeAddrStr)])
@@ -94,10 +95,11 @@ class nodoXbee:
 		Actualiza el diccionario lista_nodos.
 		'''
 		print("Llamado a método agregarNodoLista")
-		logging.info("Nodo %s agregado",self.xbeeAddrStr)
+		#logging.info("Nodo %s:%s agregado",str(nodoXbee.lista_nodos[self.xbeeAddrStr].self.id),self.xbeeAddrStr)
 		self.respuesta=self.cnxDB.consultaDat('''SELECT nodo_id FROM nodoSensor WHERE direcc=?''',(self.xbeeAddrStr,))
 		nodoXbee.lista_nodos[self.xbeeAddrStr]=xbeeSensor()
 		nodoXbee.lista_nodos[self.xbeeAddrStr].id=self.respuesta[0][0]
+		logging.info("Nodo %s:%s agregado",str(nodoXbee.lista_nodos[self.xbeeAddrStr].id),self.xbeeAddrStr)
 		
 	def checkRFdata(self):
 		'''
@@ -130,15 +132,17 @@ class xbeeSensor():
 		de humedad, temperatura e intensidad luminosa'''
 		self.listaDatos=datosRf.split(">")
 		
-		#try:
-		if len(self.listaDatos)==3:
-			self.humedad=int(self.listaDatos[0])
-			self.temperatura=int(self.listaDatos[1])
-			self.lux=int(self.listaDatos[2])
-		else:
-			print ("Datos insuficientes en listaDatos:{}".format(self.listaDatos))
-			logging.info("Error de datos en Nodo: %s",str(self.id))
-		#except IndexError:
+		try:
+			if len(self.listaDatos)==3:
+				self.humedad=int(self.listaDatos[0])
+				self.temperatura=int(self.listaDatos[1])
+				self.lux=int(self.listaDatos[2])
+			else:
+				print ("Datos insuficientes en listaDatos:{}".format(self.listaDatos))
+				logging.debug("Error de datos insuficientes en Nodo: %s",str(self.id))
+		except ValueError as e:
+			logging.debug("ValueError en nodo %s: %s",str(self.id),e)
+			print("ValueError en nodo {}:{}".format(self.id,e))
 			#print("IndexError-listaDatos:{}".format(self.listaDatos))
 		
 	def getHumedad(self):
