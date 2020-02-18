@@ -9,4 +9,4 @@ Se utiliza la placa adaptadora para GPIO v1_3
 
 Se utiliza un menú inicial de control para seleccionar el programa principal
 
-Esta verión incluye el módulo logging
+
